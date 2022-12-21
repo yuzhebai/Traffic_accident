@@ -1,0 +1,60 @@
+SELECT Description
+FROM TrafficEvents
+WHERE EventId in 
+
+(SELECT EventId
+FROM TrafficEvents
+WHERE instr(Description, 'minutes') != 0 or instr(Description, 'minute') != 0)
+
+
+CREATE TABLE WithDelayTime as
+SELECT Severity, Description
+FROM TrafficEvents
+WHERE EventId in 
+(SELECT EventId
+FROM TrafficEvents
+WHERE instr(Description, 'minutes') != 0 or instr(Description, 'minute') != 0)
+
+
+SELECT Severity, substr(Description,11,7) as T, count(Severity)
+FROM TrafficEvents
+WHERE EventId in 
+(SELECT EventId
+FROM TrafficEvents
+WHERE instr(Description, 'Delays of '))
+GROUP BY T, Severity
+
+
+ALTER TABLE US_Accidents_Dec20_updated 
+DROP COLUMN "Description" 
+ALTER TABLE US_Accidents_Dec20_updated 
+DROP COLUMN "ID" 
+ALTER TABLE US_Accidents_Dec20_updated 
+DROP COLUMN "Number" 
+ALTER TABLE US_Accidents_Dec20_updated 
+DROP COLUMN "Country" 
+ALTER TABLE US_Accidents_Dec20_updated 
+DROP COLUMN "Timezone" 
+ALTER TABLE US_Accidents_Dec20_updated 
+DROP COLUMN "Airport_Code"
+ALTER TABLE US_Accidents_Dec20_updated 
+DROP COLUMN "S_Date"
+
+
+DELETE FROM US_Accidents_Dec20_updated 
+WHERE "Wind_Direction" IS NULL OR "Wind_Direction"  = '';
+DELETE FROM US_Accidents_Dec20_updated 
+WHERE "Zipcode" IS NULL OR "Zipcode"  = '';
+DELETE FROM US_Accidents_Dec20_updated 
+WHERE "Weather_Timestamp" IS NULL OR "Weather_Timestamp"  = '';
+DELETE FROM US_Accidents_Dec20_updated 
+WHERE "Wind_Chill(F)" IS NULL OR "Wind_Chill(F)"  = '';
+DELETE FROM US_Accidents_Dec20_updated 
+WHERE "Temperature(F)" IS NULL OR "Temperature(F)"  = '';
+DELETE FROM US_Accidents_Dec20_updated 
+WHERE "Humidity(%)" IS NULL OR "Humidity(%)"  = '';
+DELETE FROM US_Accidents_Dec20_updated 
+WHERE "Precipitation(in)" IS NULL OR "Precipitation(in)"  = '';
+
+
+ALTER TABLE US_Accidents_Dec20_updated RENAME TO US_Accidents_2020;
